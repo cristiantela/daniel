@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Make Music</title>
+  </head>
+  <body>
+    <div class="container">
+      <img class="logo" src="logo_nav_orange.png" />
+
+      <div class="input-group">
+        <label>
+          Escolha uma foto:
+          <input type="file" accept="image/*" />
+        </label>
+      </div>
+
+      <div class="input-group">
+        <label>
+          Nome:
+          <input type="text" class="name" value="Seu nome" />
+        </label>
+      </div>
+
+      <div class="input-group">
+        <label>
+          Endereço:
+          <input type="text" class="place" value="Rua Nome, 99" />
+        </label>
+      </div>
+
+      <div class="input-group">
+        <label>
+          Horário:
+          <input type="text" class="hour" value="18h" />
+        </label>
+      </div>
+
+      <div class="input-group">
+        <label>
+          Cidade:
+          <input type="text" class="city" value="Nome da Cidade" />
+        </label>
+      </div>
+
+      <div class="input-group">
+        Formato:
+
+        <br />
+
+        <label>
+          <input type="radio" value="feed" name="size" checked />
+          Story
+        </label>
+
+        <label>
+          <input type="radio" value="story" name="size" />
+          Story
+        </label>
+      </div>
+
+      <div class="actions">
+        <button class="save">Salvar Imagem</button>
+        <button class="share">Compartilhar</button>
+      </div>
+
+      <br />
+
+      <canvas width="1080" height="1080"></canvas>
+    </div>
+
+    <style>
+      /* Opun Mai SemiBold SemiCondensed.ttf */
+      @import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
+
+      @font-face {
+        font-family: OpunMaiSemiBoldSemiCondensed;
+        src: url("./Opun Mai SemiBold SemiCondensed.ttf");
+      }
+
+      body {
+        margin: 0;
+      }
+
+      .container {
+        max-width: 500px;
+        width: 95%;
+        font-size: 16px;
+        font-family: "Open Sans", sans-serif;
+        margin: 16px auto;
+        color: #363636;
+      }
+
+      .logo {
+        margin: 0 auto;
+        display: block;
+        max-width: 100%;
+        margin-bottom: 2rem;
+        margin-top: 2rem;
+      }
+
+      .input-group {
+        margin-bottom: 0.8rem;
+      }
+
+      .actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+      }
+
+      canvas {
+        width: 80%;
+        margin: 1rem auto;
+        display: block;
+      }
+
+      button {
+        background-color: #dd3333;
+        padding: 15px 35px;
+        color: white;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
+        transition: all 0.3s ease;
+      }
+
+      button:hover {
+        /* transform: scale(1.065) translateY(-50%); */
+        margin: -2px -4px;
+        padding: 17px 39px;
+      }
+
+      input:not([type="radio"]) {
+        border: 1px solid rgb(0 0 0 / 0%);
+        background-color: rgb(0 0 0 / 7%);
+        font-family: inherit;
+        display: block;
+        font-size: 1rem;
+        width: 100%;
+        transition: all 0.3s ease;
+        border-radius: 4px;
+        padding: 10px;
+        outline: 0;
+        color: #353535;
+      }
+
+      input:not([type="radio"]):hover {
+        border-style: groove;
+        border-color: rgb(0 0 0 / 30%);
+      }
+
+      input:not([type="radio"]):focus {
+        border-color: #ff6b30;
+      }
+
+      
+    </style>
+
+    <script>
+      const canvas = document.querySelector("canvas");
+      const context = canvas.getContext("2d");
+
+      let size = "feed";
+
+      const backgroundImage = new Image();
+
+      document.querySelectorAll("input[name=size]").forEach((item) =>
+        item.addEventListener("change", (event) => {
+          size = event.srcElement.value;
+
+          if (size === "feed") {
+            canvas.width = 1080;
+            canvas.height = 1080;
+          } else if (size === "story") {
+            canvas.width = 1080;
+            canvas.height = 1920;
+          }
+
+          draw();
+        })
+      );
+
+      document.querySelector("button.save").addEventListener("click", () => {
+        const a = document.createElement("a");
+        a.setAttribute("href", canvas.toDataURL("image/png"));
+        a.setAttribute(
+          "download",
+          document.querySelector("input.name").value.trim()
+        );
+        a.click();
+      });
+
+      if (!navigator.share) {
+        document.querySelector("button.share").style.display = "none";
+      }
+
+      document.querySelector("button.share").addEventListener("click", () => {
+        canvas.toBlob((blob) => {
+          const filesArray = [
+            new File(
+              [blob],
+              document.querySelector("input.name").value.trim() + ".jpg",
+              {
+                type: "image/jpeg",
+                lastModified: new Date().getTime(),
+              }
+            ),
+          ];
+
+          const shareData = {
+            files: filesArray,
+          };
+
+          navigator.share(shareData);
+        });
+      });
+
+      const images = {
+        feed: new Image(),
+        story: new Image(),
+      };
+
+      images.feed.src = "./feed.png";
+      images.story.src = "./story.png";
+
+      function draw() {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+
+        if (backgroundImage.complete && !!backgroundImage.src) {
+          const oldWidth = backgroundImage.width;
+
+          backgroundImage.width = 1080;
+          backgroundImage.height = (1080 / oldWidth) * backgroundImage.height;
+
+          if (size === "story") {
+            if (backgroundImage.height < 1285) {
+              const oldHeight = backgroundImage.height;
+              backgroundImage.height = 1285;
+              backgroundImage.width =
+                (1285 / oldHeight) * backgroundImage.width;
+            }
+          } else if (size === "feed") {
+            if (backgroundImage.height < 650) {
+              const oldHeight = backgroundImage.height;
+              backgroundImage.height = 650;
+              backgroundImage.width = (650 / oldHeight) * backgroundImage.width;
+            }
+          }
+
+          context.drawImage(
+            backgroundImage,
+            0 - (backgroundImage.width - 1080) / 2,
+            0 -
+              (backgroundImage.height - 1080) / 2 +
+              (size === "story" ? 420 : -10),
+            backgroundImage.width,
+            backgroundImage.height
+          );
+        }
+
+        if (images[size].complete) {
+          context.drawImage(images[size], 0, 0, canvas.width, canvas.height);
+        }
+
+        context.save();
+
+        context.textBaseline = "middle";
+        context.font =
+          70.7 + (size === "story" ? 7 : 0) + "px OpunMaiSemiBoldSemiCondensed";
+
+        context.fillStyle = "white";
+        context.fillText(
+          document.querySelector("input.name").value.trim().toUpperCase(),
+          160 + (size === "story" ? 7 : 0),
+          95 + (size === "story" ? 60 : 0)
+        );
+
+        context.font =
+          (size === "story" ? 48.3 : 30.3) + "px OpunMaiSemiBoldSemiCondensed";
+
+        context.fillStyle = "white";
+        context.fillText(
+          document.querySelector("input.place").value.trim().toUpperCase(),
+          size === "story" ? 165 : 135,
+          size === "story" ? 1667 : 893
+        );
+
+        context.font =
+          (size === "story" ? 40 : 28) + "px OpunMaiSemiBoldSemiCondensed";
+
+        context.fillStyle = "white";
+        context.fillText(
+          document.querySelector("input.hour").value.trim().toUpperCase(),
+          size === "story" ? 165 + 20 + 25 : 135 + 35,
+          size === "story" ? 1667 + 70 + 4 : 893 + 60 + 1
+        );
+
+        context.font =
+          (size === "story" ? 50 : 33) + "px OpunMaiSemiBoldSemiCondensed";
+
+        context.fillStyle = "#13D2DE";
+        context.fillText(
+          document.querySelector("input.city").value.trim().toUpperCase(),
+          47 - (size === "story" ? 10 : 0),
+          size === "story" ? 1667 + 70 + 4 + 77 : 1012
+        );
+
+        context.restore();
+      }
+
+      Object.keys(images).forEach((key) =>
+        images[key].addEventListener("load", draw)
+      );
+
+      backgroundImage.addEventListener("load", draw);
+
+      document
+        .querySelectorAll("input[type=text]")
+        .forEach((item) => item.addEventListener("input", draw));
+
+      document
+        .querySelector('input[type="file"]')
+        .addEventListener("change", (event) => {
+          const file = event.srcElement.files[0];
+          const reader = new FileReader();
+
+          reader.addEventListener(
+            "load",
+            function () {
+              backgroundImage.removeAttribute("width");
+              backgroundImage.removeAttribute("height");
+              backgroundImage.src = reader.result;
+            },
+            false
+          );
+
+          if (file) {
+            reader.readAsDataURL(file);
+          }
+        });
+
+      const loop = () => {
+        draw();
+        setTimeout(loop, 1000 / 5);
+      };
+
+      loop();
+    </script>
+  </body>
+</html>
