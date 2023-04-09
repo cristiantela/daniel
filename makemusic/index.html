@@ -10,17 +10,24 @@
     <div class="container">
       <!-- <img class="logo" src="logo_nav_orange.png" /> -->
 
-      <div style="text-align: center;">
+      <div style="text-align: center">
         <h1>Faça seu banner virtual para o Make Music Day</h1>
         <h2>Perfeito para comunicar seu evento nas redes sociais!</h2>
       </div>
 
-      <div class="examples" style="display: flex; justify-content: center; column-gap: 1rem; align-items: center;">
-        <img src="example1.png">
-        <img src="example2.png">
-        <img src="example3.png">
+      <div
+        class="examples"
+        style="
+          display: flex;
+          justify-content: center;
+          column-gap: 1rem;
+          align-items: center;
+        "
+      >
+        <img src="example1.png" />
+        <img src="example2.png" />
+        <img src="example3.png" />
       </div>
-
 
       <div class="input-group">
         <label>
@@ -32,7 +39,13 @@
       <div class="input-group">
         <label>
           Nome:
-          <input v-model="name" type="text" class="name" placeholder="Escreva seu nome" maxlength="12" />
+          <input
+            v-model="name"
+            type="text"
+            class="name"
+            placeholder="Escreva seu nome"
+            maxlength="12"
+          />
 
           <div class="counter">{{ name.length }}/12</div>
         </label>
@@ -41,9 +54,15 @@
       <div class="input-group">
         <label>
           Endereço:
-          <input v-model="address" type="text" class="place" placeholder="Endereço do evento" maxlength="30" />
+          <input
+            v-model="address"
+            type="text"
+            class="place"
+            placeholder="Endereço do evento"
+            maxlength="30"
+          />
 
-          <div style="display: flex; justify-content: space-between;">
+          <div style="display: flex; justify-content: space-between">
             <i>Se for online, coloque sua rede social</i>
 
             <div class="counter">{{ address.length }}/30</div>
@@ -54,7 +73,13 @@
       <div class="input-group">
         <label>
           Horário:
-          <input v-model="hour" type="text" class="hour" placeholder="Horário do evento" maxlength="20" />
+          <input
+            v-model="hour"
+            type="text"
+            class="hour"
+            placeholder="Horário do evento"
+            maxlength="20"
+          />
 
           <div class="counter">{{ hour.length }}/20</div>
         </label>
@@ -63,7 +88,13 @@
       <div class="input-group">
         <label>
           Cidade:
-          <input v-model="city" type="text" class="city" placeholder="Cidade que você representa" maxlength="12" />
+          <input
+            v-model="city"
+            type="text"
+            class="city"
+            placeholder="Cidade que você representa"
+            maxlength="12"
+          />
 
           <div class="counter">{{ city.length }}/12</div>
         </label>
@@ -93,23 +124,43 @@
       <br />
 
       <canvas width="1080" height="1080"></canvas>
+
+      <br />
+
+      <div class="move" style="display: none">
+        <div style="text-align: center">
+          <img src="drag-and-drop.png" /> Clique na imagem e arraste para
+          reposicionar
+        </div>
+        <br />
+        Tamanho
+        <input
+          v-model="range"
+          type="range"
+          name="range"
+          min="1"
+          max="5"
+          step="0.05"
+        />
+      </div>
     </div>
 
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
     <script>
-      const { createApp } = Vue
-    
+      const { createApp } = Vue;
+
       createApp({
         data() {
           return {
-            name: '',
-            address: '',
-            hour: '',
-            city: '',
-          }
-        }
-      }).mount('.container')
+            name: "",
+            address: "",
+            hour: "",
+            city: "",
+            range: 1,
+          };
+        },
+      }).mount(".container");
     </script>
 
     <style>
@@ -208,16 +259,84 @@
         border-color: #ff6b30;
       }
 
-      
+      canvas {
+        cursor: move;
+      }
     </style>
 
     <script>
       const canvas = document.querySelector("canvas");
       const context = canvas.getContext("2d");
 
+      let positionX = 0;
+      let positionY = 0;
+
       let size = "feed";
 
       const backgroundImage = new Image();
+
+      let isMoving = false;
+
+      function mousedown() {
+        isMoving = true;
+
+        if (event.touches?.[0]?.clientX) {
+          beforeX = event.touches?.[0]?.clientX;
+          beforeY = event.touches?.[0]?.clientY;
+        }
+
+        draw();
+      }
+
+      function mouseup() {
+        isMoving = false;
+
+        mouseX = 0;
+        mouseY = 0;
+
+        draw();
+      }
+
+      let mouseX = 0;
+      let mouseY = 0;
+
+      let beforeX = null;
+      let beforeY = null;
+
+      function mousemove(event) {
+        event.preventDefault();
+
+        if (!isMoving) {
+          return;
+        }
+
+        if (event.movementX) {
+          mouseX = event.movementX;
+          mouseY = event.movementY;
+        } else if (event.touches?.[0]?.clientX) {
+          mouseX = event.touches?.[0]?.clientX - beforeX;
+          mouseY = event.touches?.[0]?.clientY - beforeY;
+
+          beforeX = event.touches?.[0]?.clientX;
+          beforeY = event.touches?.[0]?.clientY;
+        }
+
+        draw();
+      }
+
+      document.querySelector("canvas").addEventListener("mousedown", mousedown);
+      document.querySelector("canvas").addEventListener("mouseup", mouseup);
+      document.querySelector("canvas").addEventListener("mouseout", mouseup);
+      document.querySelector("canvas").addEventListener("mousemove", mousemove);
+
+      document
+        .querySelector("canvas")
+        .addEventListener("touchstart", mousedown);
+      document.querySelector("canvas").addEventListener("touchend", mouseup);
+      document.querySelector("canvas").addEventListener("touchleave", mouseup);
+      document.querySelector("canvas").addEventListener("touchmove", mousemove);
+
+      document.querySelector('[name="range"]').addEventListener("input", draw);
 
       document.querySelectorAll("input[name=size]").forEach((item) =>
         item.addEventListener("change", (event) => {
@@ -302,19 +421,41 @@
             }
           }
 
+          positionX += mouseX;
+          positionY += mouseY;
+
+          mouseX = 0;
+          mouseY = 0;
+
+          context.save();
+
+          context.translate(canvas.width / 2, canvas.height / 2);
+          context.scale(
+            document.querySelector('[name="range"]').value,
+            document.querySelector('[name="range"]').value
+          );
           context.drawImage(
             backgroundImage,
-            0 - (backgroundImage.width - 1080) / 2,
+            0 - (backgroundImage.width - 1080) / 2 + positionX - 1080 / 2,
             0 -
               (backgroundImage.height - 1080) / 2 +
-              (size === "story" ? 420 : -10),
+              (size === "story" ? 420 : -10) +
+              positionY -
+              canvas.height / 2,
             backgroundImage.width,
             backgroundImage.height
           );
+
+          context.restore();
         }
 
         if (images[size].complete) {
+          context.save();
+          if (isMoving) {
+            context.globalAlpha = 0.5;
+          }
           context.drawImage(images[size], 0, 0, canvas.width, canvas.height);
+          context.restore();
         }
 
         context.save();
@@ -385,6 +526,10 @@
               backgroundImage.removeAttribute("width");
               backgroundImage.removeAttribute("height");
               backgroundImage.src = reader.result;
+              positionX = 0;
+              positionY = 0;
+
+              document.querySelector(".move").style.display = null;
             },
             false
           );
