@@ -44,10 +44,10 @@
             type="text"
             class="name"
             placeholder="Escreva seu nome"
-            maxlength="12"
+            maxlength="20"
           />
 
-          <div class="counter">{{ name.length }}/12</div>
+          <div class="counter">{{ name.length }}/20</div>
         </label>
       </div>
 
@@ -59,13 +59,13 @@
             type="text"
             class="place"
             placeholder="Endereço do evento"
-            maxlength="30"
+            maxlength="40"
           />
 
           <div style="display: flex; justify-content: space-between">
             <i>Se for online, coloque sua rede social</i>
 
-            <div class="counter">{{ address.length }}/30</div>
+            <div class="counter">{{ address.length }}/40</div>
           </div>
         </label>
       </div>
@@ -78,10 +78,10 @@
             type="text"
             class="hour"
             placeholder="Horário do evento"
-            maxlength="20"
+            maxlength="30"
           />
 
-          <div class="counter">{{ hour.length }}/20</div>
+          <div class="counter">{{ hour.length }}/30</div>
         </label>
       </div>
 
@@ -93,10 +93,10 @@
             type="text"
             class="city"
             placeholder="Cidade que você representa"
-            maxlength="12"
+            maxlength="20"
           />
 
-          <div class="counter">{{ city.length }}/12</div>
+          <div class="counter">{{ city.length }}/20</div>
         </label>
       </div>
 
@@ -461,8 +461,27 @@
         context.save();
 
         context.textBaseline = "middle";
-        context.font =
-          70.7 + (size === "story" ? 7 : 0) + "px OpunMaiSemiBoldSemiCondensed";
+
+        function calculateFont(name, baseSize, maxWidth, fontFamily) {
+          for (let i = baseSize; i > 0; i -= 0.1) {
+            context.font = i + "px " + fontFamily;
+            
+            const { width } = context.measureText(name);
+            
+            console.log(width);
+
+            if (!(width > maxWidth)) {
+              break;
+            }
+          }
+        }
+
+        calculateFont(
+          document.querySelector("input.name").value.trim().toUpperCase(),
+          70.7 + (size === "story" ? 7 : 0),
+          size === 'story' ? 579 : 632,
+          'OpunMaiSemiBoldSemiCondensed'
+        );
 
         context.fillStyle = "white";
         context.fillText(
@@ -471,8 +490,13 @@
           95 + (size === "story" ? 60 : 0)
         );
 
-        context.font =
-          (size === "story" ? 48.3 : 30.3) + "px OpunMaiSemiBoldSemiCondensed";
+
+        calculateFont(
+          document.querySelector("input.place").value.trim().toUpperCase(),
+          (size === "story" ? 48.3 : 30.3),
+          size === 'story' ? 879 : 832,
+          'OpunMaiSemiBoldSemiCondensed'
+        );
 
         context.fillStyle = "white";
         context.fillText(
@@ -481,8 +505,13 @@
           size === "story" ? 1667 : 893
         );
 
-        context.font =
-          (size === "story" ? 40 : 28) + "px OpunMaiSemiBoldSemiCondensed";
+
+        calculateFont(
+          document.querySelector("input.hour").value.trim().toUpperCase(),
+          (size === "story" ? 40 : 28),
+          size === 'story' ? 879 : 832,
+          'OpunMaiSemiBoldSemiCondensed'
+        );
 
         context.fillStyle = "white";
         context.fillText(
@@ -491,8 +520,14 @@
           size === "story" ? 1667 + 70 + 4 : 893 + 60 + 1
         );
 
-        context.font =
-          (size === "story" ? 50 : 33) + "px OpunMaiSemiBoldSemiCondensed";
+
+
+        calculateFont(
+          document.querySelector("input.city").value.trim().toUpperCase(),
+          (size === "story" ? 50 : 33),
+          size === 'story' ? 550 : 832,
+          'OpunMaiSemiBoldSemiCondensed'
+        );
 
         context.fillStyle = "#13D2DE";
         context.fillText(
