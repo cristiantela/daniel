@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Make Music</title>
+  </head>
+  <body>
+    <div class="container">
+      <!-- <img class="logo" src="logo_nav_orange.png" /> -->
+
+      <div style="text-align: center">
+        <h1>Faça seu banner virtual para o Make Music Day</h1>
+        <h2>Perfeito para comunicar seu evento nas redes sociais!</h2>
+      </div>
+
+      <div
+        class="examples"
+        style="
+          display: flex;
+          justify-content: center;
+          column-gap: 1rem;
+          align-items: center;
+        "
+      >
+        <img src="example1.png" />
+        <img src="example2.png" />
+        <img src="example3.png" />
+      </div>
+
+      <div class="input-group">
+        <label>
+          Escolha uma foto:
+          <input type="file" accept="image/*" />
+        </label>
+      </div>
+
+      <div class="input-group">
+        <label>
+          Nome:
+          <input
+            v-model="name"
+            type="text"
+            class="name"
+            placeholder="Escreva seu nome"
+            maxlength="20"
+          />
+
+          <div class="counter">{{ name.length }}/20</div>
+        </label>
+      </div>
+
+      <!-- <div class="input-group">
+        <label>
+          Endereço:
+          <input
+            v-model="address"
+            type="text"
+            class="place"
+            placeholder="Endereço do evento"
+            maxlength="40"
+          />
+
+          <div style="display: flex; justify-content: space-between">
+            <i>Se for online, coloque sua rede social</i>
+
+            <div class="counter">{{ address.length }}/40</div>
+          </div>
+        </label>
+      </div>
+
+      <div class="input-group">
+        <label>
+          Horário:
+          <input
+            v-model="hour"
+            type="text"
+            class="hour"
+            placeholder="Horário do evento"
+            maxlength="30"
+          />
+
+          <div class="counter">{{ hour.length }}/30</div>
+        </label>
+      </div> -->
+
+      <div class="input-group">
+        <label>
+          Cidade:
+          <input
+            v-model="city"
+            type="text"
+            class="city"
+            placeholder="Cidade que você representa"
+            maxlength="20"
+          />
+
+          <div class="counter">{{ city.length }}/20</div>
+        </label>
+      </div>
+
+      <div class="input-group">
+        Formato:
+
+        <br />
+
+        <label>
+          <input type="radio" value="feed" name="size" checked />
+          Feed
+        </label>
+
+        <label>
+          <input type="radio" value="story" name="size" />
+          Story
+        </label>
+      </div>
+
+      <div class="actions">
+        <button class="save">Salvar Imagem</button>
+        <button class="share">Compartilhar</button>
+      </div>
+
+      <br />
+
+      <canvas width="1080" height="1080"></canvas>
+
+      <br />
+
+      <div class="move" style="display: none">
+        <div style="text-align: center">
+          <img src="drag-and-drop.png" /> Clique na imagem e arraste para
+          reposicionar
+        </div>
+        <br />
+        Tamanho
+        <input
+          v-model="range"
+          type="range"
+          name="range"
+          min="1"
+          max="5"
+          step="0.05"
+        />
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+    <script>
+      const { createApp } = Vue;
+
+      createApp({
+        data() {
+          return {
+            name: "",
+            address: "",
+            hour: "",
+            city: "",
+            range: 1,
+          };
+        },
+      }).mount(".container");
+    </script>
+
+    <style>
+      /* Opun Mai SemiBold SemiCondensed.ttf */
+      @import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
+
+      @font-face {
+        font-family: OswaldBold;
+        src: url("./fonts/Oswald-Bold.ttf");
+      }
+
+      @font-face {
+        font-family: OswaldExtraLight;
+        src: url("./fonts/Oswald-ExtraLight.ttf");
+      }
+
+      @font-face {
+        font-family: OswaldLight;
+        src: url("./fonts/Oswald-Light.ttf");
+      }
+
+      @font-face {
+        font-family: OswaldMedium;
+        src: url("./fonts/Oswald-Medium.ttf");
+      }
+
+      @font-face {
+        font-family: OswaldRegular;
+        src: url("./fonts/Oswald-Regular.ttf");
+      }
+
+      @font-face {
+        font-family: OswaldSemiBold;
+        src: url("./fonts/Oswald-SemiBold.ttf");
+      }
+
+      body {
+        margin: 0;
+      }
+
+      .container {
+        max-width: 500px;
+        width: 95%;
+        font-size: 16px;
+        font-family: "Open Sans", sans-serif;
+        margin: 16px auto;
+        color: #363636;
+      }
+
+      .counter {
+        text-align: right;
+        font-size: 0.8rem;
+      }
+
+      .examples img {
+        width: 80px;
+      }
+
+      .logo {
+        margin: 0 auto;
+        display: block;
+        max-width: 100%;
+        margin-bottom: 2rem;
+        margin-top: 2rem;
+      }
+
+      .input-group {
+        margin-bottom: 0.8rem;
+      }
+
+      .actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+      }
+
+      canvas {
+        width: 80%;
+        margin: 1rem auto;
+        display: block;
+      }
+
+      button {
+        background-color: #dd3333;
+        padding: 15px 35px;
+        color: white;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
+        transition: all 0.3s ease;
+      }
+
+      button:hover {
+        /* transform: scale(1.065) translateY(-50%); */
+        margin: -2px -4px;
+        padding: 17px 39px;
+      }
+
+      input:not([type="radio"]) {
+        border: 1px solid rgb(0 0 0 / 0%);
+        background-color: rgb(0 0 0 / 7%);
+        font-family: inherit;
+        display: block;
+        font-size: 1rem;
+        width: 100%;
+        transition: all 0.3s ease;
+        border-radius: 4px;
+        padding: 10px;
+        outline: 0;
+        color: #353535;
+        box-sizing: border-box;
+      }
+
+      input:not([type="radio"]):hover {
+        border-style: groove;
+        border-color: rgb(0 0 0 / 30%);
+      }
+
+      input:not([type="radio"]):focus {
+        border-color: #ff6b30;
+      }
+
+      canvas {
+        cursor: move;
+      }
+    </style>
+
+    <script>
+      const canvas = document.querySelector("canvas");
+      const context = canvas.getContext("2d");
+
+      let positionX = 0;
+      let positionY = 0;
+
+      let size = "feed";
+
+      const backgroundImage = new Image();
+
+      let isMoving = false;
+
+      function mousedown() {
+        isMoving = true;
+
+        if (event.touches?.[0]?.clientX) {
+          beforeX = event.touches?.[0]?.clientX;
+          beforeY = event.touches?.[0]?.clientY;
+        }
+
+        draw();
+      }
+
+      function mouseup() {
+        isMoving = false;
+
+        mouseX = 0;
+        mouseY = 0;
+
+        draw();
+      }
+
+      let mouseX = 0;
+      let mouseY = 0;
+
+      let beforeX = null;
+      let beforeY = null;
+
+      function mousemove(event) {
+        event.preventDefault();
+
+        if (!isMoving) {
+          return;
+        }
+
+        if (event.movementX) {
+          mouseX = event.movementX;
+          mouseY = event.movementY;
+        } else if (event.touches?.[0]?.clientX) {
+          mouseX = event.touches?.[0]?.clientX - beforeX;
+          mouseY = event.touches?.[0]?.clientY - beforeY;
+
+          beforeX = event.touches?.[0]?.clientX;
+          beforeY = event.touches?.[0]?.clientY;
+        }
+
+        draw();
+      }
+
+      document.querySelector("canvas").addEventListener("mousedown", mousedown);
+      document.querySelector("canvas").addEventListener("mouseup", mouseup);
+      document.querySelector("canvas").addEventListener("mouseout", mouseup);
+      document.querySelector("canvas").addEventListener("mousemove", mousemove);
+
+      document
+        .querySelector("canvas")
+        .addEventListener("touchstart", mousedown);
+      document.querySelector("canvas").addEventListener("touchend", mouseup);
+      document.querySelector("canvas").addEventListener("touchleave", mouseup);
+      document.querySelector("canvas").addEventListener("touchmove", mousemove);
+
+      document.querySelector('[name="range"]').addEventListener("input", draw);
+
+      document.querySelectorAll("input[name=size]").forEach((item) =>
+        item.addEventListener("change", (event) => {
+          size = event.srcElement.value;
+
+          if (size === "feed") {
+            canvas.width = 1080;
+            canvas.height = 1080;
+          } else if (size === "story") {
+            canvas.width = 1080;
+            canvas.height = 1920;
+          }
+
+          draw();
+        })
+      );
+
+      document.querySelector("button.save").addEventListener("click", () => {
+        const a = document.createElement("a");
+        a.setAttribute("href", canvas.toDataURL("image/png"));
+        a.setAttribute(
+          "download",
+          document.querySelector("input.name").value.trim()
+        );
+        a.click();
+      });
+
+      if (!navigator.share) {
+        document.querySelector("button.share").style.display = "none";
+      }
+
+      document.querySelector("button.share").addEventListener("click", () => {
+        canvas.toBlob((blob) => {
+          const filesArray = [
+            new File(
+              [blob],
+              document.querySelector("input.name").value.trim() + ".jpg",
+              {
+                type: "image/jpeg",
+                lastModified: new Date().getTime(),
+              }
+            ),
+          ];
+
+          const shareData = {
+            files: filesArray,
+          };
+
+          navigator.share(shareData);
+        });
+      });
+
+      const images = {
+        feed: new Image(),
+        story: new Image(),
+      };
+
+      images.feed.src = "./feed.png";
+      images.story.src = "./story.png";
+
+      function draw() {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+
+        if (backgroundImage.complete && !!backgroundImage.src) {
+          const oldWidth = backgroundImage.width;
+
+
+          if (size === "story") {
+            const maxWidth = 727;
+
+            backgroundImage.width = maxWidth;
+            backgroundImage.height = (maxWidth / oldWidth) * backgroundImage.height;
+
+            if (backgroundImage.height < 632) {
+              const oldHeight = backgroundImage.height;
+              backgroundImage.height = 632;
+              backgroundImage.width =
+                (632 / oldHeight) * backgroundImage.width;
+            }
+          } else if (size === "feed") {
+            const maxWidth = 472;
+
+            backgroundImage.width = maxWidth;
+            backgroundImage.height = (maxWidth / oldWidth) * backgroundImage.height;
+
+            if (backgroundImage.height < 312) {
+              const oldHeight = backgroundImage.height;
+              backgroundImage.height = 312;
+              backgroundImage.width = (312 / oldHeight) * backgroundImage.width;
+            }
+          }
+
+          positionX += mouseX;
+          positionY += mouseY;
+
+          mouseX = 0;
+          mouseY = 0;
+
+          context.save();
+
+          if (size === 'feed') {
+            context.translate(844, 783);
+          } else {
+            context.translate(535, 1030);
+          }
+
+          context.scale(
+            document.querySelector('[name="range"]').value,
+            document.querySelector('[name="range"]').value
+          );
+          context.drawImage(
+            backgroundImage,
+            0 - (backgroundImage.width - 1080) / 2 + positionX - 1080 / 2,
+            0 -
+              (backgroundImage.height - 1080) / 2 +
+              (size === "story" ? 420 : -10) +
+              positionY -
+              canvas.height / 2,
+            backgroundImage.width,
+            backgroundImage.height
+          );
+
+          context.restore();
+        }
+
+        if (images[size].complete) {
+          context.save();
+          if (isMoving) {
+            context.globalAlpha = 0.5;
+          }
+          context.drawImage(images[size], 0, 0, canvas.width, canvas.height);
+          context.restore();
+        }
+
+        context.save();
+
+        context.textBaseline = "middle";
+
+        function calculateFont(name, baseSize, maxWidth, fontFamily) {
+          for (let i = baseSize; i > 0; i -= 0.1) {
+            context.font = i + "px " + fontFamily;
+            
+            const { width } = context.measureText(name);
+            
+            console.log(width);
+
+            if (!(width > maxWidth)) {
+              break;
+            }
+          }
+        }
+
+        calculateFont(
+          document.querySelector("input.name").value.trim().toUpperCase(),
+          (size === "feed" ? 108 : 108),
+          size === 'feed' ? 764 : 699,
+          'OswaldRegular'
+        );
+
+        context.fillStyle = "white";
+        context.fillText(
+          document.querySelector("input.name").value.trim().toUpperCase(),
+          (size === "feed" ? 250 : 274),
+          (size === "feed" ? 221 - 5 : 222)
+        );
+
+
+        // calculateFont(
+        //   document.querySelector("input.place").value.trim().toUpperCase(),
+        //   (size === "story" ? 48.3 : 30.3),
+        //   size === 'story' ? 879 : 832,
+        //   'OpunMaiSemiBoldSemiCondensed'
+        // );
+
+        // context.fillStyle = "white";
+        // context.fillText(
+        //   document.querySelector("input.place").value.trim().toUpperCase(),
+        //   size === "story" ? 165 : 135,
+        //   size === "story" ? 1667 : 893
+        // );
+
+
+        // calculateFont(
+        //   document.querySelector("input.hour").value.trim().toUpperCase(),
+        //   (size === "story" ? 40 : 28),
+        //   size === 'story' ? 879 : 832,
+        //   'OpunMaiSemiBoldSemiCondensed'
+        // );
+
+        // context.fillStyle = "white";
+        // context.fillText(
+        //   document.querySelector("input.hour").value.trim().toUpperCase(),
+        //   size === "story" ? 165 + 20 + 25 : 135 + 35,
+        //   size === "story" ? 1667 + 70 + 4 : 893 + 60 + 1
+        // );
+
+
+
+        calculateFont(
+          document.querySelector("input.city").value.trim().toUpperCase(),
+          (size === "feed" ? 44 : 58),
+          size === 'feed' ? 371 : 442,
+          'OswaldRegular'
+        );
+
+        context.fillStyle = "black";
+        context.fillText(
+          document.querySelector("input.city").value.trim().toUpperCase(),
+          (size === "feed" ? 337 : 506),
+          size === "feed" ? 87 + 5 : 1680
+        );
+
+        context.restore();
+      }
+
+      Object.keys(images).forEach((key) =>
+        images[key].addEventListener("load", draw)
+      );
+
+      backgroundImage.addEventListener("load", draw);
+
+      document
+        .querySelectorAll("input[type=text]")
+        .forEach((item) => item.addEventListener("input", draw));
+
+      document
+        .querySelector('input[type="file"]')
+        .addEventListener("change", (event) => {
+          const file = event.srcElement.files[0];
+          const reader = new FileReader();
+
+          reader.addEventListener(
+            "load",
+            function () {
+              backgroundImage.removeAttribute("width");
+              backgroundImage.removeAttribute("height");
+              backgroundImage.src = reader.result;
+              positionX = 0;
+              positionY = 0;
+
+              document.querySelector(".move").style.display = null;
+            },
+            false
+          );
+
+          if (file) {
+            reader.readAsDataURL(file);
+          }
+        });
+
+      const loop = () => {
+        draw();
+        setTimeout(loop, 1000 / 5);
+      };
+
+      loop();
+    </script>
+  </body>
+</html>
