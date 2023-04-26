@@ -375,12 +375,24 @@
 
       document.querySelector("button.save").addEventListener("click", () => {
         const a = document.createElement("a");
-        a.setAttribute("href", canvas.toDataURL("image/png"));
-        a.setAttribute(
-          "download",
-          (document.querySelector("input.name").value.trim() || 'automotivo') + '.png',
-        );
-        a.click();
+
+        canvas.toBlob((blob) => {
+          const file = new File(
+            [blob],
+            (document.querySelector("input.name").value.trim() || 'automotivo') + '.png',
+            {
+              type: "image/jpeg",
+              lastModified: new Date().getTime(),
+            }
+          );
+
+          a.setAttribute("href", URL.createObjectURL(file));
+          a.setAttribute(
+            "download",
+            (document.querySelector("input.name").value.trim() || 'automotivo') + '.png',
+          );
+          a.click();
+        });
       });
 
       if (!navigator.share) {
