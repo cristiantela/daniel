@@ -492,23 +492,27 @@
 
         context.save();
 
-        context.textBaseline = "middle";
+        context.textBaseline = "alphabetic";
 
         function calculateFont(name, baseSize, maxWidth, fontFamily) {
+          let fontSize = 0;
+
           for (let i = baseSize; i > 0; i -= 0.1) {
+            fontSize = i;
+
             context.font = i + "px " + fontFamily;
             
             const { width } = context.measureText(name);
-            
-            console.log(width);
 
             if (!(width > maxWidth)) {
               break;
             }
           }
+
+          return fontSize;
         }
 
-        calculateFont(
+        let fontSize = calculateFont(
           document.querySelector("input.name").value.trim().toUpperCase(),
           (size === "feed" ? 108 : 108),
           size === 'feed' ? 764 : 699,
@@ -519,7 +523,7 @@
         context.fillText(
           document.querySelector("input.name").value.trim().toUpperCase(),
           (size === "feed" ? 250 : 274),
-          (size === "feed" ? 216 : 224)
+          (size === "feed" ? 251 - (88 / 2) + (fontSize * 0.814814815 / 2) : 258 - (88 / 2) + (fontSize * 0.814814815 / 2))
         );
 
 
@@ -554,7 +558,7 @@
 
 
 
-        calculateFont(
+        fontSize = calculateFont(
           document.querySelector("input.city").value.trim().toUpperCase(),
           (size === "feed" ? 44 : 58),
           size === 'feed' ? 371 : 442,
@@ -565,7 +569,7 @@
         context.fillText(
           document.querySelector("input.city").value.trim().toUpperCase(),
           (size === "feed" ? 337 : 506),
-          size === "feed" ? 87 + 5 : 1678
+          size === "feed" ? 107 - ((44 * 0.814814815) / 2) + (fontSize * 0.814814815 / 2) : 1699 - ((58 * 0.814814815) / 2) + (fontSize * 0.814814815 / 2)
         );
 
         context.restore();
