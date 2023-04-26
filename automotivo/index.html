@@ -4,15 +4,15 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Make Music</title>
+    <title>Som Automotivo</title>
   </head>
   <body>
     <div class="container">
       <!-- <img class="logo" src="logo_nav_orange.png" /> -->
 
-      <div style="text-align: center">
-        <h1>Faça seu banner virtual para o Make Music Day</h1>
-        <h2>Perfeito para comunicar seu evento nas redes sociais!</h2>
+      <div style="text-align: left">
+        <h1>Espalhe sua paixao pelo som automotivo!</h1>
+        <h2>Crie seu banner para as redes sociais.</h2>
       </div>
 
       <div
@@ -44,10 +44,7 @@
             type="text"
             class="name"
             placeholder="Escreva seu nome"
-            maxlength="20"
           />
-
-          <div class="counter">{{ name.length }}/20</div>
         </label>
       </div>
 
@@ -93,10 +90,7 @@
             type="text"
             class="city"
             placeholder="Cidade que você representa"
-            maxlength="20"
           />
-
-          <div class="counter">{{ city.length }}/20</div>
         </label>
       </div>
 
@@ -525,7 +519,7 @@
         context.fillText(
           document.querySelector("input.name").value.trim().toUpperCase(),
           (size === "feed" ? 250 : 274),
-          (size === "feed" ? 221 - 5 : 222)
+          (size === "feed" ? 216 : 224)
         );
 
 
@@ -571,7 +565,7 @@
         context.fillText(
           document.querySelector("input.city").value.trim().toUpperCase(),
           (size === "feed" ? 337 : 506),
-          size === "feed" ? 87 + 5 : 1680
+          size === "feed" ? 87 + 5 : 1678
         );
 
         context.restore();
