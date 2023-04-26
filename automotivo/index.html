@@ -379,9 +379,9 @@
         canvas.toBlob((blob) => {
           const file = new File(
             [blob],
-            (document.querySelector("input.name").value.trim() || 'automotivo'),
+            (document.querySelector("input.name").value.trim() || 'automotivo') + '.png',
             {
-              type: "image/jpeg",
+              type: "image/png",
               lastModified: new Date().getTime(),
             }
           );
@@ -389,7 +389,7 @@
           a.setAttribute("href", URL.createObjectURL(file));
           a.setAttribute(
             "download",
-            (document.querySelector("input.name").value.trim() || 'automotivo'),
+            (document.querySelector("input.name").value.trim() || 'automotivo') + '.png',
           );
           a.click();
         }, 'image/png');
