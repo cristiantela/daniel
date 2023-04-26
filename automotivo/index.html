@@ -378,7 +378,7 @@
         a.setAttribute("href", canvas.toDataURL("image/png"));
         a.setAttribute(
           "download",
-          document.querySelector("input.name").value.trim()
+          (document.querySelector("input.name").value.trim() || 'automotivo') + '.png',
         );
         a.click();
       });
