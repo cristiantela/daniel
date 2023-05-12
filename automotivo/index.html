@@ -4,15 +4,15 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Make Music</title>
+    <title>Som Automotivo</title>
   </head>
   <body>
     <div class="container">
       <!-- <img class="logo" src="logo_nav_orange.png" /> -->
 
-      <div style="text-align: center">
-        <h1>Faça seu banner virtual para o Make Music Day</h1>
-        <h2>Perfeito para comunicar seu evento nas redes sociais!</h2>
+      <div style="text-align: left">
+        <h1>Espalhe sua paixao pelo som automotivo!</h1>
+        <h2>Crie seu banner para as redes sociais.</h2>
       </div>
 
       <div
@@ -44,14 +44,11 @@
             type="text"
             class="name"
             placeholder="Escreva seu nome"
-            maxlength="20"
           />
-
-          <div class="counter">{{ name.length }}/20</div>
         </label>
       </div>
 
-      <div class="input-group">
+      <!-- <div class="input-group">
         <label>
           Endereço:
           <input
@@ -83,7 +80,7 @@
 
           <div class="counter">{{ hour.length }}/30</div>
         </label>
-      </div>
+      </div> -->
 
       <div class="input-group">
         <label>
@@ -93,10 +90,7 @@
             type="text"
             class="city"
             placeholder="Cidade que você representa"
-            maxlength="20"
           />
-
-          <div class="counter">{{ city.length }}/20</div>
         </label>
       </div>
 
@@ -168,8 +162,33 @@
       @import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
 
       @font-face {
-        font-family: OpunMaiSemiBoldSemiCondensed;
-        src: url("./Opun Mai SemiBold SemiCondensed.ttf");
+        font-family: OswaldBold;
+        src: url("./fonts/Oswald-Bold.ttf");
+      }
+
+      @font-face {
+        font-family: OswaldExtraLight;
+        src: url("./fonts/Oswald-ExtraLight.ttf");
+      }
+
+      @font-face {
+        font-family: OswaldLight;
+        src: url("./fonts/Oswald-Light.ttf");
+      }
+
+      @font-face {
+        font-family: OswaldMedium;
+        src: url("./fonts/Oswald-Medium.ttf");
+      }
+
+      @font-face {
+        font-family: OswaldRegular;
+        src: url("./fonts/Oswald-Regular.ttf");
+      }
+
+      @font-face {
+        font-family: OswaldSemiBold;
+        src: url("./fonts/Oswald-SemiBold.ttf");
       }
 
       body {
@@ -356,12 +375,24 @@
 
       document.querySelector("button.save").addEventListener("click", () => {
         const a = document.createElement("a");
-        a.setAttribute("href", canvas.toDataURL("image/png"));
-        a.setAttribute(
-          "download",
-          document.querySelector("input.name").value.trim()
-        );
-        a.click();
+
+        canvas.toBlob((blob) => {
+          const file = new File(
+            [blob],
+            (document.querySelector("input.name").value.trim() || 'automotivo') + '.png',
+            {
+              type: "image/png",
+              lastModified: new Date().getTime(),
+            }
+          );
+
+          a.setAttribute("href", URL.createObjectURL(file));
+          a.setAttribute(
+            "download",
+            (document.querySelector("input.name").value.trim() || 'automotivo') + '.png',
+          );
+          a.click();
+        }, 'image/png');
       });
 
       if (!navigator.share) {
@@ -403,21 +434,29 @@
         if (backgroundImage.complete && !!backgroundImage.src) {
           const oldWidth = backgroundImage.width;
 
-          backgroundImage.width = 1080;
-          backgroundImage.height = (1080 / oldWidth) * backgroundImage.height;
 
           if (size === "story") {
-            if (backgroundImage.height < 1285) {
+            const maxWidth = 727;
+
+            backgroundImage.width = maxWidth;
+            backgroundImage.height = (maxWidth / oldWidth) * backgroundImage.height;
+
+            if (backgroundImage.height < 632) {
               const oldHeight = backgroundImage.height;
-              backgroundImage.height = 1285;
+              backgroundImage.height = 632;
               backgroundImage.width =
-                (1285 / oldHeight) * backgroundImage.width;
+                (632 / oldHeight) * backgroundImage.width;
             }
           } else if (size === "feed") {
-            if (backgroundImage.height < 650) {
+            const maxWidth = 472;
+
+            backgroundImage.width = maxWidth;
+            backgroundImage.height = (maxWidth / oldWidth) * backgroundImage.height;
+
+            if (backgroundImage.height < 312) {
               const oldHeight = backgroundImage.height;
-              backgroundImage.height = 650;
-              backgroundImage.width = (650 / oldHeight) * backgroundImage.width;
+              backgroundImage.height = 312;
+              backgroundImage.width = (312 / oldHeight) * backgroundImage.width;
             }
           }
 
@@ -429,7 +468,12 @@
 
           context.save();
 
-          context.translate(canvas.width / 2, canvas.height / 2);
+          if (size === 'feed') {
+            context.translate(844, 783);
+          } else {
+            context.translate(535, 1030);
+          }
+
           context.scale(
             document.querySelector('[name="range"]').value,
             document.querySelector('[name="range"]').value
@@ -460,80 +504,84 @@
 
         context.save();
 
-        context.textBaseline = "middle";
+        context.textBaseline = "alphabetic";
 
         function calculateFont(name, baseSize, maxWidth, fontFamily) {
+          let fontSize = 0;
+
           for (let i = baseSize; i > 0; i -= 0.1) {
+            fontSize = i;
+
             context.font = i + "px " + fontFamily;
             
             const { width } = context.measureText(name);
-            
-            console.log(width);
 
             if (!(width > maxWidth)) {
               break;
             }
           }
+
+          return fontSize;
         }
 
-        calculateFont(
+        let fontSize = calculateFont(
           document.querySelector("input.name").value.trim().toUpperCase(),
-          70.7 + (size === "story" ? 7 : 0),
-          size === 'story' ? 579 : 632,
-          'OpunMaiSemiBoldSemiCondensed'
+          (size === "feed" ? 108 : 108),
+          size === 'feed' ? 764 : 699,
+          'OswaldRegular'
         );
 
         context.fillStyle = "white";
         context.fillText(
           document.querySelector("input.name").value.trim().toUpperCase(),
-          160 + (size === "story" ? 7 : 0),
-          95 + (size === "story" ? 60 : 0)
+          (size === "feed" ? 250 : 274),
+          (size === "feed" ? 251 - (88 / 2) + (fontSize * 0.814814815 / 2) : 258 - (88 / 2) + (fontSize * 0.814814815 / 2))
         );
 
 
-        calculateFont(
-          document.querySelector("input.place").value.trim().toUpperCase(),
-          (size === "story" ? 48.3 : 30.3),
-          size === 'story' ? 879 : 832,
-          'OpunMaiSemiBoldSemiCondensed'
-        );
+        // calculateFont(
+        //   document.querySelector("input.place").value.trim().toUpperCase(),
+        //   (size === "story" ? 48.3 : 30.3),
+        //   size === 'story' ? 879 : 832,
+        //   'OpunMaiSemiBoldSemiCondensed'
+        // );
 
-        context.fillStyle = "white";
-        context.fillText(
-          document.querySelector("input.place").value.trim().toUpperCase(),
-          size === "story" ? 165 : 135,
-          size === "story" ? 1667 : 893
-        );
-
-
-        calculateFont(
-          document.querySelector("input.hour").value.trim().toUpperCase(),
-          (size === "story" ? 40 : 28),
-          size === 'story' ? 879 : 832,
-          'OpunMaiSemiBoldSemiCondensed'
-        );
-
-        context.fillStyle = "white";
-        context.fillText(
-          document.querySelector("input.hour").value.trim().toUpperCase(),
-          size === "story" ? 165 + 20 + 25 : 135 + 35,
-          size === "story" ? 1667 + 70 + 4 : 893 + 60 + 1
-        );
+        // context.fillStyle = "white";
+        // context.fillText(
+        //   document.querySelector("input.place").value.trim().toUpperCase(),
+        //   size === "story" ? 165 : 135,
+        //   size === "story" ? 1667 : 893
+        // );
 
 
+        // calculateFont(
+        //   document.querySelector("input.hour").value.trim().toUpperCase(),
+        //   (size === "story" ? 40 : 28),
+        //   size === 'story' ? 879 : 832,
+        //   'OpunMaiSemiBoldSemiCondensed'
+        // );
 
-        calculateFont(
+        // context.fillStyle = "white";
+        // context.fillText(
+        //   document.querySelector("input.hour").value.trim().toUpperCase(),
+        //   size === "story" ? 165 + 20 + 25 : 135 + 35,
+        //   size === "story" ? 1667 + 70 + 4 : 893 + 60 + 1
+        // );
+
+
+
+        fontSize = calculateFont(
           document.querySelector("input.city").value.trim().toUpperCase(),
-          (size === "story" ? 50 : 33),
-          size === 'story' ? 550 : 832,
-          'OpunMaiSemiBoldSemiCondensed'
+          (size === "feed" ? 44 : 58),
+          size === 'feed' ? 371 : 442,
+          'OswaldRegular'
         );
 
-        context.fillStyle = "#13D2DE";
+        context.fillStyle = "black";
         context.fillText(
           document.querySelector("input.city").value.trim().toUpperCase(),
-          47 - (size === "story" ? 10 : 0),
-          size === "story" ? 1667 + 70 + 4 + 77 : 1012
+          (size === "feed" ? 337 : 506),
+          size === "feed" ? 107 - ((44 * 0.814814815) / 2) + (fontSize * 0.814814815 / 2) : 1699 - ((58 * 0.814814815) / 2) + (fontSize * 0.814814815 / 2)
         );
 
         context.restore();

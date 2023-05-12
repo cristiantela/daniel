@@ -4,15 +4,15 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Make Music</title>
+    <title>Profissional da Música</title>
   </head>
   <body>
     <div class="container">
       <!-- <img class="logo" src="logo_nav_orange.png" /> -->
 
       <div style="text-align: center">
-        <h1>Faça seu banner virtual para o Make Music Day</h1>
-        <h2>Perfeito para comunicar seu evento nas redes sociais!</h2>
+        <h1>Profissional da música!</h1>
+        <h2>Crie seu banner para as redes sociais.</h2>
       </div>
 
       <div
@@ -44,14 +44,11 @@
             type="text"
             class="name"
             placeholder="Escreva seu nome"
-            maxlength="20"
           />
-
-          <div class="counter">{{ name.length }}/20</div>
         </label>
       </div>
 
-      <div class="input-group">
+      <!-- <div class="input-group">
         <label>
           Endereço:
           <input
@@ -83,7 +80,7 @@
 
           <div class="counter">{{ hour.length }}/30</div>
         </label>
-      </div>
+      </div> -->
 
       <div class="input-group">
         <label>
@@ -93,10 +90,55 @@
             type="text"
             class="city"
             placeholder="Cidade que você representa"
-            maxlength="20"
           />
+        </label>
+      </div>
 
-          <div class="counter">{{ city.length }}/20</div>
+      <div class="input-group">
+        <label>
+          O que ofereço:
+          <textarea
+            v-model="offer"
+            type="text"
+            class="offer"
+            placeholder="Escreva aqui o que você oferece"
+          ></textarea>
+        </label>
+      </div>
+
+      <div class="input-group">
+        <label>
+          Quem sou:
+          <textarea
+            v-model="about"
+            type="text"
+            class="about"
+            placeholder="Escreva aqui sobre quem é você"
+          ></textarea>
+        </label>
+      </div>
+
+      <div class="input-group">
+        <label>
+          Número:
+          <input
+            v-model="phone"
+            type="text"
+            class="phone"
+            placeholder="Escreva seu número"
+          />
+        </label>
+      </div>
+
+      <div class="input-group">
+        <label>
+          Instagram:
+          <input
+            v-model="instagram"
+            type="text"
+            class="instagram"
+            placeholder="Escreva seu nome de usuário do Instagram"
+          />
         </label>
       </div>
 
@@ -158,6 +200,10 @@
             hour: "",
             city: "",
             range: 1,
+            phone: "",
+            instagram: "",
+            offer: "",
+            about: "",
           };
         },
       }).mount(".container");
@@ -168,8 +214,8 @@
       @import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
 
       @font-face {
-        font-family: OpunMaiSemiBoldSemiCondensed;
-        src: url("./Opun Mai SemiBold SemiCondensed.ttf");
+        font-family: LeagueSpartanBold;
+        src: url("./fonts/LeagueSpartan-Bold.ttf");
       }
 
       body {
@@ -235,7 +281,7 @@
         padding: 17px 39px;
       }
 
-      input:not([type="radio"]) {
+      textarea:not([type="radio"]), input:not([type="radio"]) {
         border: 1px solid rgb(0 0 0 / 0%);
         background-color: rgb(0 0 0 / 7%);
         font-family: inherit;
@@ -250,12 +296,12 @@
         box-sizing: border-box;
       }
 
-      input:not([type="radio"]):hover {
+      textarea:not([type="radio"]):hover, input:not([type="radio"]):hover {
         border-style: groove;
         border-color: rgb(0 0 0 / 30%);
       }
 
-      input:not([type="radio"]):focus {
+      textarea:not([type="radio"]):focus, input:not([type="radio"]):focus {
         border-color: #ff6b30;
       }
 
@@ -356,12 +402,24 @@
 
       document.querySelector("button.save").addEventListener("click", () => {
         const a = document.createElement("a");
-        a.setAttribute("href", canvas.toDataURL("image/png"));
-        a.setAttribute(
-          "download",
-          document.querySelector("input.name").value.trim()
-        );
-        a.click();
+
+        canvas.toBlob((blob) => {
+          const file = new File(
+            [blob],
+            (document.querySelector("input.name").value.trim() || 'automotivo') + '.png',
+            {
+              type: "image/png",
+              lastModified: new Date().getTime(),
+            }
+          );
+
+          a.setAttribute("href", URL.createObjectURL(file));
+          a.setAttribute(
+            "download",
+            (document.querySelector("input.name").value.trim() || 'automotivo') + '.png',
+          );
+          a.click();
+        }, 'image/png');
       });
 
       if (!navigator.share) {
@@ -403,21 +461,29 @@
         if (backgroundImage.complete && !!backgroundImage.src) {
           const oldWidth = backgroundImage.width;
 
-          backgroundImage.width = 1080;
-          backgroundImage.height = (1080 / oldWidth) * backgroundImage.height;
 
           if (size === "story") {
-            if (backgroundImage.height < 1285) {
+            const maxWidth = 630;
+
+            backgroundImage.width = maxWidth;
+            backgroundImage.height = (maxWidth / oldWidth) * backgroundImage.height;
+
+            if (backgroundImage.height < 1425) {
               const oldHeight = backgroundImage.height;
-              backgroundImage.height = 1285;
+              backgroundImage.height = 1425;
               backgroundImage.width =
-                (1285 / oldHeight) * backgroundImage.width;
+                (1425 / oldHeight) * backgroundImage.width;
             }
           } else if (size === "feed") {
-            if (backgroundImage.height < 650) {
+            const maxWidth = 601;
+
+            backgroundImage.width = maxWidth;
+            backgroundImage.height = (maxWidth / oldWidth) * backgroundImage.height;
+
+            if (backgroundImage.height < 696) {
               const oldHeight = backgroundImage.height;
-              backgroundImage.height = 650;
-              backgroundImage.width = (650 / oldHeight) * backgroundImage.width;
+              backgroundImage.height = 696;
+              backgroundImage.width = (696 / oldHeight) * backgroundImage.width;
             }
           }
 
@@ -429,7 +495,12 @@
 
           context.save();
 
-          context.translate(canvas.width / 2, canvas.height / 2);
+          if (size === 'feed') {
+            context.translate(795, 577);
+          } else {
+            context.translate(818, 980);
+          }
+
           context.scale(
             document.querySelector('[name="range"]').value,
             document.querySelector('[name="range"]').value
@@ -460,80 +531,178 @@
 
         context.save();
 
-        context.textBaseline = "middle";
+        context.textBaseline = "alphabetic";
 
         function calculateFont(name, baseSize, maxWidth, fontFamily) {
+          let fontSize = 0;
+
           for (let i = baseSize; i > 0; i -= 0.1) {
+            fontSize = i;
+
             context.font = i + "px " + fontFamily;
             
             const { width } = context.measureText(name);
-            
-            console.log(width);
 
             if (!(width > maxWidth)) {
               break;
             }
           }
+
+          return fontSize;
         }
 
-        calculateFont(
+        const fontHeight = 0.657142857;
+
+        let fontSize = calculateFont(
           document.querySelector("input.name").value.trim().toUpperCase(),
-          70.7 + (size === "story" ? 7 : 0),
-          size === 'story' ? 579 : 632,
-          'OpunMaiSemiBoldSemiCondensed'
+          (size === "feed" ? 105 : 105),
+          size === 'feed' ? 773 : 770,
+          'LeagueSpartanBold'
         );
 
         context.fillStyle = "white";
         context.fillText(
           document.querySelector("input.name").value.trim().toUpperCase(),
-          160 + (size === "story" ? 7 : 0),
-          95 + (size === "story" ? 60 : 0)
+          (size === "feed" ? 227 : 240),
+          size === "feed" ? 83 + (fontSize * fontHeight / 2) : 112 + (fontSize * fontHeight / 2)
         );
 
 
-        calculateFont(
-          document.querySelector("input.place").value.trim().toUpperCase(),
-          (size === "story" ? 48.3 : 30.3),
-          size === 'story' ? 879 : 832,
-          'OpunMaiSemiBoldSemiCondensed'
+        // calculateFont(
+        //   document.querySelector("input.place").value.trim().toUpperCase(),
+        //   (size === "story" ? 48.3 : 30.3),
+        //   size === 'story' ? 879 : 832,
+        //   'OpunMaiSemiBoldSemiCondensed'
+        // );
+
+        // context.fillStyle = "white";
+        // context.fillText(
+        //   document.querySelector("input.place").value.trim().toUpperCase(),
+        //   size === "story" ? 165 : 135,
+        //   size === "story" ? 1667 : 893
+        // );
+
+
+        // calculateFont(
+        //   document.querySelector("input.hour").value.trim().toUpperCase(),
+        //   (size === "story" ? 40 : 28),
+        //   size === 'story' ? 879 : 832,
+        //   'OpunMaiSemiBoldSemiCondensed'
+        // );
+
+        // context.fillStyle = "white";
+        // context.fillText(
+        //   document.querySelector("input.hour").value.trim().toUpperCase(),
+        //   size === "story" ? 165 + 20 + 25 : 135 + 35,
+        //   size === "story" ? 1667 + 70 + 4 : 893 + 60 + 1
+        // );
+
+
+
+        fontSize = calculateFont(
+          document.querySelector("input.city").value.trim().toUpperCase(),
+          (size === "feed" ? 36 : 43),
+          size === 'feed' ? 360 : 423,
+          'LeagueSpartanBold'
         );
 
         context.fillStyle = "white";
         context.fillText(
-          document.querySelector("input.place").value.trim().toUpperCase(),
-          size === "story" ? 165 : 135,
-          size === "story" ? 1667 : 893
+          document.querySelector("input.city").value.trim().toUpperCase(),
+          (size === "feed" ? 695 : 623),
+          size === "feed" ? 229 + (fontSize * fontHeight / 2) : 285 + (fontSize * fontHeight / 2)
         );
 
+        // function calculateFontTextArea(text, baseSize, maxWidth, fontFamily) {
+        //   let fontSize = 0;
 
-        calculateFont(
-          document.querySelector("input.hour").value.trim().toUpperCase(),
-          (size === "story" ? 40 : 28),
-          size === 'story' ? 879 : 832,
-          'OpunMaiSemiBoldSemiCondensed'
+        //   for (let i = baseSize; i > 0; i -= 0.1) {
+        //     fontSize = i;
+
+        //     context.font = i + "px " + fontFamily;
+            
+        //     const { width } = context.measureText(text);
+
+        //     if (!(width > maxWidth)) {
+        //       break;
+        //     }
+        //   }
+
+        //   return fontSize;
+        // }
+
+        function textBox(text, fontSize, lineHeight, fontFamily, maxWidth, maxHeight, baseX, baseY, draw = false) {
+          context.font = fontSize + "px " + fontFamily;
+
+          const words = text.replace(/\n/g, ' \n ').split(' ');
+
+          let x = 0;
+          let y = 0;
+
+          // context.fillRect(0, y, 10, 10);
+
+          words.forEach(word => {
+            if (word === '\n') {
+              x = 0;
+              y += (fontSize * fontHeight) * lineHeight;
+              return;
+            }
+
+            const wordWidth = context.measureText(word).width;
+            if (x + wordWidth > maxWidth && x != 0) {
+              x = 0;
+              y += (fontSize * fontHeight) * lineHeight;
+            }
+
+            if (draw) {
+              context.fillText(word, x + baseX, y + fontSize * fontHeight + baseY);
+            }
+
+            x += wordWidth + context.measureText(' ').width;
+          });
+
+          if (y + fontSize * fontHeight > maxHeight) {
+            textBox(text, fontSize - 0.1, lineHeight, fontFamily, maxWidth, maxHeight, baseX, baseY,);
+          } else if (!draw) {
+            textBox(text, fontSize, lineHeight, fontFamily, maxWidth, maxHeight, baseX, baseY, true);
+          }
+
+          // context.fillRect(0, y + fontSize * fontHeight, 10, 10, true);
+        }
+
+        textBox(document.querySelector("textarea.offer").value.trim().toUpperCase(), size === "feed" ? 35 : 44, 2, "LeagueSpartanBold", size === "feed" ? 412 : 416, size === "feed" ? 146 : 239, size === "feed" ? 55 : 58, size === "feed" ? 347 : 494);
+
+        textBox(document.querySelector("textarea.about").value.trim().toUpperCase(), size === "feed" ? 21 : 36, 1.521739131, "LeagueSpartanBold", size === "feed" ? 412 : 416, size === "feed" ? 235 : 432, size === "feed" ? 55 : 58, size === "feed" ? 573 : 851);
+
+
+        fontSize = calculateFont(
+          document.querySelector("input.phone").value.trim().toUpperCase(),
+          (size === "feed" ? 36 : 36),
+          size === 'feed' ? 331 : 331,
+          'LeagueSpartanBold'
         );
 
         context.fillStyle = "white";
         context.fillText(
-          document.querySelector("input.hour").value.trim().toUpperCase(),
-          size === "story" ? 165 + 20 + 25 : 135 + 35,
-          size === "story" ? 1667 + 70 + 4 : 893 + 60 + 1
+          document.querySelector("input.phone").value.trim().toUpperCase(),
+          (size === "feed" ? 130 : 150),
+          size === "feed" ? 953 + (fontSize * fontHeight / 2) : 1717 + (fontSize * fontHeight / 2)
         );
 
+        let instagramUsername = '@' + document.querySelector("input.instagram").value.trim().toUpperCase().replace(/[^A-z._0-9]/g, '');
 
-
-        calculateFont(
-          document.querySelector("input.city").value.trim().toUpperCase(),
-          (size === "story" ? 50 : 33),
-          size === 'story' ? 550 : 832,
-          'OpunMaiSemiBoldSemiCondensed'
+        fontSize = calculateFont(
+          instagramUsername,
+          (size === "feed" ? 36 : 36),
+          size === 'feed' ? 331 : 331,
+          'LeagueSpartanBold'
         );
 
-        context.fillStyle = "#13D2DE";
+        context.fillStyle = "white";
         context.fillText(
-          document.querySelector("input.city").value.trim().toUpperCase(),
-          47 - (size === "story" ? 10 : 0),
-          size === "story" ? 1667 + 70 + 4 + 77 : 1012
+          instagramUsername,
+          (size === "feed" ? 130 : 150),
+          size === "feed" ? 1022 + (fontSize * fontHeight / 2) : 1787 + (fontSize * fontHeight / 2)
         );
 
         context.restore();
